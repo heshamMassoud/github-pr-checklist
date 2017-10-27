@@ -14,6 +14,8 @@ Chrome extension that adds a check list of todos according to the PR review.
 [Chrome extension](https://chrome.google.com/webstore/)
 
 
+## License
 
-<! -- ## License -->
+github-pr-checklist is licensed under the Apache License 2.0.
 
+See [LICENSE](./LICENSE) for the full license text.
