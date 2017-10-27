@@ -5,16 +5,18 @@
   var token = null;
   var privateRepos = null;
 
-  function createAnchorElement(repo, base, compare, text) {
-    var innerText = `<a href="/${repo}/compare/${base}...${compare}" class="select-menu-item js-navigation-item js-navigation-open navigation-focus" role="menuitem" rel="nofollow">
-            <svg aria-hidden="true" class="octicon octicon-check select-menu-item-icon" height="16" version="1.1" viewBox="0 0 12 16" width="12"><path fill-rule="evenodd" d="M12 5l-8 8-4-4 1.5-1.5L4 10l6.5-6.5z"></path></svg>
-            <div class="select-menu-item-text js-select-button-text">${text}</div>
-          </a>`;
+  function createChecklist(comments) {
+    var todos = comments.map(comment => createChecklistElement(comment));
+    var innerText = `<h4>Todo</h4><ul class="contains-task-list">${todos}</ul>`;
     var div = document.createElement('div');
     div.innerHTML = innerText;
+    return div;
+}
 
-    return div.firstChild;
-  }
+function createChecklistElement(comment) {
+  var innerText = `<li class="task-list-item enabled"><input class="task-list-item-checkbox" id="" type="checkbox">${comment.body}</li>`;
+  return innerText;
+}
 
   function getInfo() {
     var [, owner, repoName,, prNumber] = location.pathname.split('/');
@@ -37,10 +39,16 @@
 
     if (comments === null) {
       const headers = getHeaders();
-      const response = await fetch(`//api.github.com/repos/${info.repoTitle}/pulls/${info.prNumber}/comments`, { headers });
-      if (response.ok) {
-        const json = await response.json();
-        comments = json.map(function(comment) {return comment.body;});
+      const prResponse = await fetch(`//api.github.com/repos/${info.repoTitle}/pulls/${info.prNumber}`, { headers });
+      const commentsResponse = await fetch(`//api.github.com/repos/${info.repoTitle}/pulls/${info.prNumber}/comments`, { headers });
+      if (prResponse.ok && commentsResponse.ok) {
+        const prJson = await prResponse.json();
+        const prOpener = prJson.user.login;
+        console.log(`This PR was openned by ${prOpener}.`);
+        const commentsJson = await commentsResponse.json();
+        comments = commentsJson.filter(comment =>
+                                        comment.user.login != prOpener)
+                               .map(comment => comment);
       } else {
         // Error Handling
         const text = await response.text();
@@ -68,9 +76,10 @@
   function setup() {
     if (isOpenPrPage()) {
         getComments().then(function() {
-            comments.forEach(function(comment) {
-                console.log(comment);
-            });
+            var [prDescription] = document.querySelectorAll(".d-block.comment-body.markdown-body.js-comment-body");
+            prDescription.append(`There are ${comments.length} comments on this PR.`);
+            console.log(createChecklist(comments));
+            prDescription.append(createChecklist(comments));
         });
     }
 }
