@@ -28,7 +28,7 @@
         "https://github.com/*"
       ],
       "js": [
-        "src/inject.js"
+        "src/inject.js", "src/showdown.js"
       ]
     }
   ]

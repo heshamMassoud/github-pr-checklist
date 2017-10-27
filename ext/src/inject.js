@@ -15,6 +15,8 @@
 
 function createChecklistElement(comment) {
   var innerText = `<li class="task-list-item enabled"><input class="task-list-item-checkbox" id="" type="checkbox">${comment.body}</li>`;
+  var converter = new showdown.Converter();
+  var markDownFormattedComment = converter.makeHtml(comment.body)
   return innerText;
 }
 
