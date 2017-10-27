@@ -1,0 +1,19 @@
+{
+  "name": "Github PR Checklist",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "Adds a check list of todos according to the PR review.",
+  "browser_action": {
+    "default_popup": "src/popup.html"
+  },
+  "icons": {
+    "16": "icons/icon.png",
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
+  },
+  "permissions": [
+    "storage",
+    "https://github.com/*",
+    "activeTab"
+]
+}
