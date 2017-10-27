@@ -6,8 +6,9 @@
   var privateRepos = null;
 
   function createChecklist(comments) {
-    var todos = comments.map(comment => createChecklistElement(comment));
-    var innerText = `<h4>Todo</h4><ul class="contains-task-list">${todos}</ul>`;
+    var todosHTMLElements = comments.map(comment => createChecklistElement(comment));
+    todosHTMLElements = todosHTMLElements.join(""); // strip commas
+    var innerText = `<h4>Todo</h4><ul class="contains-task-list">${todosHTMLElements}</ul>`;
     var div = document.createElement('div');
     div.innerHTML = innerText;
     return div;
