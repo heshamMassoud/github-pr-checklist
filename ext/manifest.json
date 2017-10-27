@@ -15,5 +15,21 @@
     "storage",
     "https://github.com/*",
     "activeTab"
-]
+],
+  "background": { "scripts": ["src/hot-reload.js"] },
+  "options_ui": {
+    "page": "src/options.html",
+    "chrome_style": true
+  },
+  "content_scripts": [
+    {
+      "run_at": "document_start",
+      "matches": [
+        "https://github.com/*"
+      ],
+      "js": [
+        "src/inject.js"
+      ]
+    }
+  ]
 }
