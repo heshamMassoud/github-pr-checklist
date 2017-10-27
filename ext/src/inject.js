@@ -78,7 +78,6 @@ function createChecklistElement(comment) {
         getComments().then(function() {
             var [prDescription] = document.querySelectorAll(".d-block.comment-body.markdown-body.js-comment-body");
             prDescription.append(`There are ${comments.length} comments on this PR.`);
-            console.log(createChecklist(comments));
             prDescription.append(createChecklist(comments));
         });
     }
