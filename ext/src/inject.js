@@ -6,20 +6,37 @@
   var privateRepos = null;
 
   function createChecklist(comments) {
-    var todosHTMLElements = comments.map(comment => createChecklistElement(comment));
+    var todosHTMLElements = comments.map(comment => createChecklistCommentLayout(comment));
     todosHTMLElements = todosHTMLElements.join(""); // strip commas
-    var innerText = `<h4>Todo</h4><ul class="contains-task-list">${todosHTMLElements}</ul>`;
+    var innerText = `<h4>You still have ${comments.length} unaddressed comments</h4><ul class="contains-task-list">${todosHTMLElements}</ul>`;
     var div = document.createElement('div');
     div.innerHTML = innerText;
     return div;
 }
 
-function createChecklistElement(comment) {
+function formatMarkDown(comment) {
   var converter = new showdown.Converter();
-  var markDownFormattedComment = converter.makeHtml(comment.body)
-  .replace('<p>', '<div style="background: #c6f1eb; border-radius: 5px 5px 5px 5px;padding: 45px;">').replace('</p>', '</div>');
-  var innerText = `<li class="task-list-item enabled"><input class="task-list-item-checkbox" id="" type="checkbox">${markDownFormattedComment}</li>`;
-  return innerText;
+  var markDownFormattedComment = converter.makeHtml(comment.body);
+  return markDownFormattedComment;
+}
+
+function createChecklistCommentLayout(comment) {
+    var markDownFormattedComment = formatMarkDown(comment);
+    var commentUrl = comment._links.html.href;
+    var commentCreatedAt = comment.created_at;
+    var commenter = comment.user;
+    var commenterLogin = commenter.login;
+    var commenterAvatarUrl = commenter.avatar_url;
+    var commenterAvatarHtmlElement = `<a class="float-left mt-" href="${commenterLogin}"><img alt="@${commenterLogin}" class="avatar" height="28" src="${commenterAvatarUrl}" width="28"></a>`;
+    var commenterNameHtmlElement = `<strong><a href="${commenterLogin}" class="author link-gray-dark">${commenterLogin}</a></strong> `;
+    var commentDateHtmlElement = `<span class="text-gray"><a href="${commentUrl}" class="timestamp"><relative-time datetime="${commentCreatedAt}" title="No title yet">${commentCreatedAt}</relative-time></a></span>`;
+    var commentTitleHtmlElement = `<h4 class="f5 text-normal d-inline">${commenterNameHtmlElement}${commentDateHtmlElement}</h4>`;
+    var commentBodyHtmlElement = `<div class="comment-body markdown-body  js-comment-body">${markDownFormattedComment}</div>`;
+    var entireCommentHtmlElement = `<div class="edit-comment-hide">${commenterAvatarHtmlElement}<div class="review-comment-contents">${commentTitleHtmlElement}${commentBodyHtmlElement}</div></div>`;
+
+    var checklistedCommentHtmlElement = `<li class="task-list-item enabled"><input class="task-list-item-checkbox" style="float:right" id="" type="checkbox">${entireCommentHtmlElement}</li>`
+    return checklistedCommentHtmlElement;
+}
 }
 
   function getInfo() {
@@ -81,7 +98,6 @@ function createChecklistElement(comment) {
     if (isOpenPrPage()) {
         getComments().then(function() {
             var [prDescription] = document.querySelectorAll(".d-block.comment-body.markdown-body.js-comment-body");
-            prDescription.append(`There are ${comments.length} comments on this PR.`);
             prDescription.append(createChecklist(comments));
         });
     }
