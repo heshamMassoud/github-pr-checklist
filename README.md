@@ -2,7 +2,7 @@
 
 # Github Pull Request Checklist
 
-Chrome extension that adds a check list of todos according to the PR review.
+Chrome extension that adds a check list of todos according to the PR review. It is inspired by the similar [BitBucket feature](https://blog.bitbucket.org/2014/09/16/introducing-pull-request-tasks/).
 
 ## Features
 * Works out of the box with public repositories
