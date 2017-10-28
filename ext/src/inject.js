@@ -37,6 +37,22 @@ function createChecklistCommentLayout(comment) {
     var checklistedCommentHtmlElement = `<li class="task-list-item enabled"><input class="task-list-item-checkbox" style="float:right" id="" type="checkbox">${entireCommentHtmlElement}</li>`
     return checklistedCommentHtmlElement;
 }
+
+function onSideBar(comments) {
+    var sideBarItem =
+    `<div class="discussion-sidebar-item sidebar-milestone js-discussion-sidebar-item">
+        <form accept-charset="UTF-8" action="/commercetools/commercetools-sync-java/issues/59/set_milestone?partial=issues%2Fsidebar%2Fshow%2Fmilestone" class="js-issue-sidebar-form" data-remote="true" method="post">
+            <div class="select-menu js-menu-container js-select-menu js-load-contents " data-contents-url="/commercetools/commercetools-sync-java/issues/59/show_partial?partial=issues%2Fsidebar%2Fmilestone_menu_content">
+                <button type="button" class="discussion-sidebar-heading discussion-sidebar-toggle js-menu-target" aria-label="Set milestone" aria-haspopup="true" aria-expanded="false" data-hotkey="m">
+                    Milestone
+                </button>
+            </div>
+            ${comments}
+        </form>
+    </div>`;
+    var div = document.createElement('div');
+    div.innerHTML = sideBarItem;
+    return div;
 }
 
   function getInfo() {
@@ -98,7 +114,9 @@ function createChecklistCommentLayout(comment) {
     if (isOpenPrPage()) {
         getComments().then(function() {
             var [prDescription] = document.querySelectorAll(".d-block.comment-body.markdown-body.js-comment-body");
+            var [sideBar] = document.querySelectorAll("#partial-discussion-sidebar");
             prDescription.append(createChecklist(comments));
+            //sideBar.append(onSideBar(createChecklist(comments).innerHTML));
         });
     }
 }
